@@ -1,6 +1,7 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
+
 const form = document.querySelector('.form');
 
 form.addEventListener('submit', event => {
@@ -11,29 +12,36 @@ form.addEventListener('submit', event => {
   const delay = Number(formData.get('delay'));
   const state = formData.get('state');
 
-  console.log('delay:', delay);
-  console.log('state:', state);
-
   const promise = new Promise((resolve, reject) => {
     setTimeout(() => {
       switch (state) {
         case 'fulfilled':
-          iziToast.success({
-            title: 'Error',
-            message: 'Please choose a date in the future',
-            position: 'topRight',
-          });
-          resolve('Success! Value passed to resolve function');
+          resolve(`✅ Fulfilled promise in ${delay}ms`);
           break;
+
         case 'rejected':
-          iziToast.error({
-            title: 'Error',
-            message: 'Please choose a date in the future',
-            position: 'topRight',
-          });
-          reject('Error! Error passed to reject function');
+          reject(`❌ Rejected promise in ${delay}ms`);
           break;
+
+        default:
+          reject('Unknown state');
       }
     }, delay);
   });
+
+  promise
+    .then(message => {
+      iziToast.success({
+        title: 'Success',
+        message,
+        position: 'topRight',
+      });
+    })
+    .catch(error => {
+      iziToast.error({
+        title: 'Error',
+        message: String(error),
+        position: 'topRight',
+      });
+    });
 });
